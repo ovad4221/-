@@ -43,28 +43,46 @@ if not response_2:
     pass
 
 json_response_2 = response_2.json()
+pt = []
 
-organization = json_response_2["features"][0]
-org_name = organization["properties"]["CompanyMetaData"]["name"]
-org_com_data = organization["properties"]["CompanyMetaData"]
-org_address = org_com_data["address"]
-org_time = org_com_data["Hours"]["text"]
+for i in range(10):
+    try:
+        organization = json_response_2["features"][i]
+        org_name = organization["properties"]["CompanyMetaData"]["name"]
+        org_com_data = organization["properties"]["CompanyMetaData"]
+        org_address = org_com_data["address"]
+        point = organization["geometry"]["coordinates"]
+        org_point = "{0},{1}".format(point[0], point[1])
+        try:
+            org_time = org_com_data["Hours"]["text"]
+            print(org_point)
+            if org_time:
+                if 'круглосуточно' in org_time:
+                    pt.append(org_point + ',pmgns')
+                else:
+                    pt.append(org_point + ',pmbls')
+            else:
+                pt.append(org_point + ',pmgrs')
+        except KeyError:
+            pt.append(org_point + ',pmgrs')
+    except IndexError:
+        print('меньше 10 аптек найдено.')
 
-point = organization["geometry"]["coordinates"]
-org_point = "{0},{1}".format(point[0], point[1])
+pt.append("{0},pm2dgl".format(address_ll) + ',org')
+
 map_params = {
     "ll": address_ll,
     "l": "map",
-    "pt": "{0},pm2dgl".format(org_point) + ',org~' + "{0},pm2dgl".format(address_ll)
+    "pt": '~'.join(pt)
 }
 
 map_api_server = "http://static-maps.yandex.ru/1.x/"
 response = requests.get(map_api_server, params=map_params)
 
-print('Название: ', org_name)
-print('Адрес: ', org_address)
-print('Время работы: ', org_time)
-print('Расстояние: ', find_delta_meters(address_ll, org_point), 'м')
+# print('Название: ', org_name)
+# print('Адрес: ', org_address)
+# print('Время работы: ', org_time)
+# print('Расстояние: ', find_delta_meters(address_ll, org_point), 'м')
 
 Image.open(BytesIO(
     response.content)).show()
