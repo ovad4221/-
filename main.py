@@ -1,13 +1,9 @@
 import sys
 from io import BytesIO
-from find_delta import find_delta
 
 import requests
 from PIL import Image
 
-# Пусть наше приложение предполагает запуск:
-# python search.py Москва, ул. Ак. Королева, 12
-# Тогда запрос к геокодеру формируется следующим образом:
 toponym_to_find = " ".join(sys.argv[1:])
 
 geocoder_api_server = "http://geocode-maps.yandex.ru/1.x/"
@@ -17,32 +13,52 @@ geocoder_params = {
     "geocode": toponym_to_find,
     "format": "json"}
 
-response = requests.get(geocoder_api_server, params=geocoder_params)
+response_1 = requests.get(geocoder_api_server, params=geocoder_params)
 
-if not response:
-    # обработка ошибочной ситуации
+if not response_1:
     pass
 
-# Преобразуем ответ в json-объект
-json_response = response.json()
-# Получаем первый топоним из ответа геокодера.
-toponym = json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
-# Координаты центра топонима:
+json_response_1 = response_1.json()
+toponym = json_response_1["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
 toponym_coodrinates = toponym["Point"]["pos"]
-# Долгота и широта:
 toponym_longitude, toponym_lattitude = toponym_coodrinates.split(" ")
 
 
-# Собираем параметры для запроса к StaticMapsAPI:
+search_api_server = "https://search-maps.yandex.ru/v1/"
+
+api_key = "d0ce2ab6-de1b-471e-abc6-91173b1eae61"
+
+address_ll = ','.join([toponym_longitude, toponym_lattitude])
+
+search_params = {
+    "apikey": api_key,
+    "text": "аптека",
+    "lang": "ru_RU",
+    "ll": address_ll,
+    "type": "biz"
+}
+
+response_2 = requests.get(search_api_server, params=search_params)
+if not response_2:
+    pass
+
+json_response_2 = response_2.json()
+
+organization = json_response_2["features"][0]
+org_name = organization["properties"]["CompanyMetaData"]["name"]
+org_address = organization["properties"]["CompanyMetaData"]["address"]
+print(json_response_2)
+
+point = organization["geometry"]["coordinates"]
+org_point = "{0},{1}".format(point[0], point[1])
+print(org_address)
 map_params = {
-    "ll": ",".join([toponym_longitude, toponym_lattitude]),
-    "spn": ",".join(find_delta(json_response)),
+    "ll": address_ll,
     "l": "map",
-    "pt": ",".join([toponym_longitude, toponym_lattitude]) + ',org'
+    "pt": "{0},pm2dgl".format(org_point) + ',org'
 }
 
 map_api_server = "http://static-maps.yandex.ru/1.x/"
-# ... и выполняем запрос
 response = requests.get(map_api_server, params=map_params)
 
 Image.open(BytesIO(
