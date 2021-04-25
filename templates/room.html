@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block navbar_cont %}
+    <h1>Миссия Колонизация Марса</h1>
+{% endblock %}
+
+{% block content %}
+    <h4>И на Марсе будут яблони цвести!</h4>
+{% endblock %}
+
+{% block training %}
+    <div class="room">
+        <h2 class="room-block-title">Оформление каюты</h2>
+        <table class="table table-secondary">
+          <thead>
+            <tr>
+              <th scope="col" class="table-top">Цвет стен</th>
+              <th scope="col" class="table-top">Эмблема</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="room-style">
+                {% if sex == 'female' and age < 21 %}
+                  <td class="wall-color-female-y"></td>
+                  <td class="logo-young"></td>
+                {% elif sex == 'female' and age >= 21 %}
+                  <td class="wall-color-female-o"></td>
+                  <td class="logo-old"></td>
+                {% elif sex == 'male' and age < 21 %}
+                  <td class="wall-color-male-y"></td>
+                  <td class="logo-young"></td>
+                {% elif sex == 'male' and age >= 21 %}
+                  <td class="wall-color-male-o"></td>
+                  <td class="logo-old"></td>
+                {% endif %}
+            </tr>
+          </tbody>
+        </table>
+        </div>
+
+{% endblock %}

@@ -1,0 +1,111 @@
+.container {
+    max-width: 1920px;
+}
+
+h1, h4 {
+    text-align: left;
+}
+
+.navbar-brand {
+    text-align: right;
+}
+
+h4 {
+    color: grey;
+}
+
+img {
+    margin-top: 16px;
+}
+
+.ship {
+    max-width: 512px;
+    margin: auto;
+}
+
+.tran {
+    text-align: center;
+}
+
+.info_list {
+    padding-left: 40px;
+}
+
+.auto-answer-h4 {
+    padding-left: 20px;
+}
+
+.accident {
+    min-height: 50px;
+    background-image: url(/static/img/MARS.png);
+    background-repeat: no-repeat;
+    margin-bottom: 16px;
+    margin-left: 20px;
+}
+
+.accident-text {
+    max-width: 400px;
+    margin-left: 150px;
+    padding-top: 5px;
+}
+
+.distribution {
+    max-width: 500px;
+    margin: auto;
+}
+
+.distribution-title {
+    text-align: center;
+}
+
+.room {
+    max-width: 1000px;
+    margin: auto;
+}
+
+.room-style {
+    background-color: white;
+}
+
+.room-block-title {
+    text-align: center;
+}
+
+.table-top {
+    text-align: center;
+}
+
+.table-secondary {
+    min-height: 600px;
+}
+
+.wall-color-female-o {
+    background-color: #ff5252;
+}
+
+.wall-color-female-y {
+    background-color: #fabbbb;
+}
+
+.wall-color-male-o {
+    background-color: #4d52f7;
+}
+
+.wall-color-male-y {
+    background-color: #adc0f0;
+}
+
+.logo-young {
+    background-image: url(/static/img/young.png);
+    background-size: auto 100%;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.logo-old {
+    background-image: url(/static/img/old.png);
+    background-size: auto 100%;
+    background-repeat: no-repeat;
+    background-position: center center;
+
+}

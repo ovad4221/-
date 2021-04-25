@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block navbar_cont %}
+    <h1>Миссия Колонизация Марса</h1>
+{% endblock %}
+
+{% block content %}
+    <h4>И на Марсе будут яблони цвести!</h4>
+{% endblock %}
+
+{% block training %}
+    {% if 'инженер' in prof or 'строитель' in prof %}
+        <div class="ship">
+            <h2 class="tran">Инженерные тренажеры</h2>
+            <img src="{{url_for('static', filename='img/IS.jpg')}}" alt="Схема корабля">
+        </div>
+    {% else %}
+        <div class="ship">
+            <h2 class="tran">Научные симуляторы</h2>
+            <img src="{{url_for('static', filename='img/NS.jpg')}}" alt="Схема корабля">
+        </div>
+    {% endif %}
+{% endblock %}

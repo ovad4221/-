@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block navbar_cont %}
+    <h1>Миссия Колонизация Марса</h1>
+{% endblock %}
+
+{% block content %}
+    <h4>И на Марсе будут яблони цвести!</h4>
+{% endblock %}
+
+{% block training %}
+    {% if list == "ol"  %}
+        <div>
+            <h2>Список профессий</h2>
+            <ol>
+                {% for prof in prof_lis %}
+                <li>{{ prof }}</li>
+                {% endfor %}
+            </ol>
+        </div>
+    {% elif list == "ul" %}
+        <div>
+            <h2>Список профессий</h2>
+            <ul>
+                {% for prof in prof_lis %}
+                <li>{{ prof }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% else %}
+        <div>
+            <h2>Неверный параметр запроса</h2>
+        </div>
+    {% endif %}
+{% endblock %}
