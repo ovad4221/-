@@ -1,8 +1,8 @@
 import sys
 from io import BytesIO
-
 import requests
 from PIL import Image
+from find_delta import find_delta_meters
 
 toponym_to_find = " ".join(sys.argv[1:])
 
@@ -46,20 +46,25 @@ json_response_2 = response_2.json()
 
 organization = json_response_2["features"][0]
 org_name = organization["properties"]["CompanyMetaData"]["name"]
-org_address = organization["properties"]["CompanyMetaData"]["address"]
-print(json_response_2)
+org_com_data = organization["properties"]["CompanyMetaData"]
+org_address = org_com_data["address"]
+org_time = org_com_data["Hours"]["text"]
 
 point = organization["geometry"]["coordinates"]
 org_point = "{0},{1}".format(point[0], point[1])
-print(org_address)
 map_params = {
     "ll": address_ll,
     "l": "map",
-    "pt": "{0},pm2dgl".format(org_point) + ',org'
+    "pt": "{0},pm2dgl".format(org_point) + ',org~' + "{0},pm2dgl".format(address_ll)
 }
 
 map_api_server = "http://static-maps.yandex.ru/1.x/"
 response = requests.get(map_api_server, params=map_params)
+
+print('Название: ', org_name)
+print('Адрес: ', org_address)
+print('Время работы: ', org_time)
+print('Расстояние: ', find_delta_meters(address_ll, org_point), 'м')
 
 Image.open(BytesIO(
     response.content)).show()
