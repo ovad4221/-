@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block navbar_cont %}
+    <h1>Миссия Колонизация Марса</h1>
+{% endblock %}
+
+{% block content %}
+    <h4>И на Марсе будут яблони цвести!</h4>
+{% endblock %}
+
+{% block training %}
+    <div class="distribution">
+        <h2 class="distribution-title">Размещение по каютам</h2>
+        {% set a = 'Каюта №' %}
+        {% for crewmate in crew %}
+            <p>{{crewmate}} - {{a}} {{loop.index}} {% if loop.first %} - капитан корабля {% endif %}</p>
+        {% endfor %}
+    </div>
+
+{% endblock %}

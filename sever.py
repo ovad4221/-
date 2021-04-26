@@ -1,10 +1,22 @@
-from flask import Flask
+from flask import Flask, request
 from flask import render_template
 from flask import url_for
 from flask import redirect
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import DataRequired
+import os
+from werkzeug.utils import secure_filename
+from random import choice
+import json
+
+
+UPLOAD_FOLDER = './static/imgs_for_galery'
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+
+app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
 
 class LoginForm(FlaskForm):
@@ -16,14 +28,14 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Доступ')
 
 
-app = Flask(__name__)
-app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
-
-
 @app.route('/')
-@app.route('/index')
-def index():
-    return render_template('index.html', title='Заготовка')
+def ind():
+    return render_template('index.html', title='Mars one')
+
+
+@app.route('/index/<title>')
+def index(title):
+    return render_template('index.html', title=title)
 
 
 @app.route('/training/<prof>')
@@ -65,6 +77,68 @@ def login():
 @app.route('/success')
 def success():
     return 'success'
+
+
+@app.route('/distribution')
+def distribution():
+    crew = ['Ридли Скотт', 'Энди Уир', 'Марк Уотни', 'Венката Капур',
+            'Тедди Сандерс', 'Шон Бин', 'Иванов Пётр', 'Петров Иван']
+    return render_template('distribution.html', title='Распределение', crew=crew)
+
+
+@app.route('/table/<sex>/<int:age>')
+def table(sex, age):
+    return render_template('room.html', title='Офрмление каюты', sex=sex, age=age)
+
+
+@app.route('/carousel', methods=['POST', 'GET'])
+def carousel():
+    return render_template('carousel.html', title='Пейзажи марса')
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+
+
+@app.route('/galery', methods=['GET', 'POST'])
+def upload_file():
+    if request.method == 'POST':
+        file = request.files['file']
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return redirect('/galery')
+    photos = os.listdir(UPLOAD_FOLDER)
+    for i in range(len(photos)):
+        photos[i] = url_for('static', filename=f'imgs_for_galery/{photos[i]}')
+    return render_template('galery.html', title='Галерея', photos=photos)
+
+
+@app.route('/load_photo', methods=['GET', 'POST'])
+def load_photo():
+    active_filename = ''
+    if request.method == 'POST':
+        file = request.files['file']
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            active_filename = filename
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return redirect('/load_photo')
+
+    return render_template('load_photo.html', title='Загрузка фото',
+                           photo=url_for('static', filename=f'img/{active_filename}', active_filename=active_filename))
+
+
+@app.route('/member')
+def member():
+    with open('./templates/crewmates.json', 'r') as file:
+        data = json.load(file)
+    crewmate = choice(data['crew'])
+
+    return render_template('member.html', title='Член экипажа',
+                           name=crewmate['name'], surname=crewmate['surname'],
+                           photo=url_for('static', filename=f'img/{crewmate["photo"]}'), prof_list=crewmate['profession'])
 
 
 if __name__ == '__main__':
