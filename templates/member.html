@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block navbar_cont %}
+    <h1>Миссия Колонизация Марса</h1>
+{% endblock %}
+
+{% block content %}
+    <h4>И на Марсе будут яблони цвести!</h4>
+        <div class="ship">
+            <h2 class="tran">{{name}} {{surname}}</h2>
+            <img class="member-photo" src="{{photo}}" alt="Картинка члена экипажа">
+            <h4 class="prof-list">{% for prof in prof_list %} {% if not loop.last %} {{ prof }}, {% else %} {{ prof }} {% endif %} {% endfor %}</h4>
+        </div>
+{% endblock %}

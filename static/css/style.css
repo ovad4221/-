@@ -118,3 +118,8 @@ img {
 .add-photo {
     margin: auto;
 }
+
+.member-photo {
+    max-width: 720px;
+    margin: auto;
+}

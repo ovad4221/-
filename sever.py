@@ -7,6 +7,8 @@ from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import DataRequired
 import os
 from werkzeug.utils import secure_filename
+from random import choice
+import json
 
 
 UPLOAD_FOLDER = './static/imgs_for_galery'
@@ -111,6 +113,17 @@ def upload_file():
     for i in range(len(photos)):
         photos[i] = url_for('static', filename=f'imgs_for_galery/{photos[i]}')
     return render_template('galery.html', title='Галерея', photos=photos)
+
+
+@app.route('/member')
+def member():
+    with open('./templates/crewmates.json', 'r') as file:
+        data = json.load(file)
+    crewmate = choice(data['crew'])
+
+    return render_template('member.html', title='Член экипажа',
+                           name=crewmate['name'], surname=crewmate['surname'],
+                           photo=url_for('static', filename=f'img/{crewmate["photo"]}'), prof_list=crewmate['profession'])
 
 
 if __name__ == '__main__':
