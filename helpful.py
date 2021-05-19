@@ -1,28 +1,29 @@
-import random
-import requests
+f = open('27-A.txt').readlines()
+pars = list(map(lambda x: [int(i) for i in x.strip().split()], f[1:]))
+pars_1 = []
+papalow = [0, 0]
 
-url = "http://geocode-maps.yandex.ru/1.x"
-url_image = 'https://static-maps.yandex.ru/1.x'
-params = {
-    'apikey': '40d1649f-0493-4b70-98ba-98533de7710b',
-    'format': 'json'
-}
-
-
-def get_town_photo(town):
-    params['geocode'] = town
-    response = requests.get(url, params)
-    if response:
-        json_response = response.json()
-        toponym = json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
-        coords = toponym['Point']['pos'].split()
-        # 'sat', 'sat,skl'
-        pikch = requests.get(url_image,
-                             {'ll': ','.join(coords), 'z': 14, 'l': random.choice(['sat', 'map', 'sat,skl'])})
-        if pikch:
-            with open('static/images/town.jpg', 'wb') as f:
-                f.write(pikch.content)
+for i in pars:
+    if i[0] % 5 != i[1] % 5:
+        pars_1.append(i)
 
 
-# print(get_town_photo('Yaroslaval'))
-# get_town_photo('Санкт-Петербург')
+def savart(pars, papalow):
+    suma = 0
+    for i in pars:
+        if i != papalow:
+            suma += min(i)
+    if suma + papalow[0] % 5 != 0:
+        return suma + papalow[0] % 5
+    elif suma + papalow[1] % 5 != 0:
+        return suma + papalow[1] % 5
+    else:
+        return 10 ** 200
+
+
+all_rez = []
+for i in pars_1:
+    all_rez.append(savart(pars, i))
+
+print(min(all_rez))
+
